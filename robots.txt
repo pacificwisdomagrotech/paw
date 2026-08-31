@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /erp/
+
+Sitemap: https://pacificwisdomagrotech.github.io/pacificwisdomagrotech/sitemap.xml
