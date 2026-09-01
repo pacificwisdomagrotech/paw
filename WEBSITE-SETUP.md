@@ -13,62 +13,78 @@ folder here already contains your complete, current ERP app untouched, just
 relocated.
 
 ```
-/                          ← marketing homepage (NEW)
+/                          ← marketing homepage
   index.html
   css/site.css
   js/site.js
-  js/site-config.js        ← the ONE file to edit (see below)
+  js/site-config.js        ← business settings (WhatsApp, analytics, social)
+  js/site-content.js        ← notices, banners, event photos — edit often
   assets/logo.jpg
   assets/favicon.png
   assets/company-profile.pdf
+  assets/events/            ← put event photos here
   robots.txt
   sitemap.xml
   erp/                     ← your ERP app, unchanged, just moved here
-    index.html
-    css/styles.css
-    js/... (all the same files as before)
 ```
 
-After uploading, your site works like this:
-- `https://pacificwisdomagrotech.github.io/pacificwisdomagrotech/` → marketing homepage
-- `https://pacificwisdomagrotech.github.io/pacificwisdomagrotech/erp/` → ERP login (also reachable via the "Login" button in the site's header)
+After uploading:
+- `.../pacificwisdomagrotech/` → marketing homepage
+- `.../pacificwisdomagrotech/erp/` → ERP login (also reachable via the "Login" button in the header)
 
-**Nothing about your Firebase setup changes** — the ERP's `erp/js/firebase-config.js` still holds your project keys exactly as before.
+**Nothing about your Firebase setup changes** — `erp/js/firebase-config.js` still holds your project keys exactly as before.
 
-## The one file to edit for your business details
+## Day-to-day updates: notices, banners, and event photos
 
-Open **`js/site-config.js`** and fill in:
+This is the part you'll touch most often, and it's deliberately simple —
+**one file, plain text, no HTML**: `js/site-content.js`.
 
-- `whatsappNumber` — already set from your flyer (9977096266 with country code)
-- `social.facebook` / `instagram` / `twitter` / `linkedin` / `youtube` — leave blank to hide that icon until you have a real link
-- `googleReviewsUrl` — currently points to a generic Google search; replace with your actual Google Business Profile review link once you have one (search "Pacific Wisdom Agrotech" on Google Maps → your listing → "Get more reviews" gives you a shareable link)
-- `gaId` — your Google Analytics 4 Measurement ID (starts with `G-`), leave blank to skip analytics entirely
-- `metaPixelId` — your Meta/Facebook Pixel ID, leave blank to skip
-- `upiId` — your UPI ID (e.g. `yourname@okhdfcbank`) for the "Pay via UPI" button; leave blank to hide that button until you have one
+### Updating the notice bar (the small scrolling strip at the top)
+Open `js/site-content.js`, find `SITE_NOTICES`, and add/edit/remove lines
+like this:
+```
+{ en: "🎉 New branch opening in Bhopal next month!", hi: "🎉 अगले महीने भोपाल में नई शाखा खुल रही है!" },
+```
+Each line needs an English and Hindi version. Add a comma after each line
+except don't worry too much — copy an existing line and just change the text.
+
+### Updating the banner slider (rotating strip below the header)
+Same idea, under `SITE_BANNERS` in the same file.
+
+### Adding event photos
+1. Put the photo file into the `assets/events/` folder (any filename, e.g. `farmer-meet-2026.jpg`)
+2. In `js/site-content.js`, under `SITE_EVENTS`, add:
+```
+{ image: "./assets/events/farmer-meet-2026.jpg", caption: "Farmer Training Workshop", captionHi: "किसान प्रशिक्षण कार्यशाला", date: "August 2026" },
+```
+3. Upload both the photo and the updated `site-content.js` — that's it, the photo appears in the new "Events & Gallery" section automatically.
+
+**After any of these edits, you only need to re-upload `js/site-content.js`** (plus any new photo files) — nothing else changes.
+
+## The one file for business settings
+
+`js/site-config.js` — WhatsApp number, social media links, Google Analytics
+ID, Meta Pixel ID, UPI ID, Google Reviews link. Fill in what you have; leave
+the rest blank until you have real values (each hides itself automatically
+when blank).
 
 ## What's already working, no setup needed
 
-- ✅ **WhatsApp button** (floating, bottom-right) and the "Send via WhatsApp" inquiry form — pre-fills a message to your WhatsApp number
-- ✅ **Company profile PDF** — generated from your flyer content, downloadable via the "Company Profile" button (also captures a name+phone lead first, and pings you on WhatsApp about it)
-- ✅ **Multi-language** — EN/Hindi toggle in the header, translates the main content
-- ✅ **Notice bar + banner slider** — scrolling ticker up top, rotating announcement banners below the header
-- ✅ **Google Map** — embedded using your address, no API key needed
-- ✅ **SEO basics** — title, meta description, Open Graph tags, `robots.txt`, `sitemap.xml`
-- ✅ **Fast loading** — no frameworks, minimal dependencies, images sized reasonably
+- ✅ WhatsApp floating button + inquiry form
+- ✅ Company profile PDF lead magnet
+- ✅ Multi-language (EN/Hindi toggle)
+- ✅ Notice bar, banner slider, and events gallery (all editable via `site-content.js`)
+- ✅ Google Map (using your address, no API key)
+- ✅ SEO basics — meta tags, Open Graph, robots.txt, sitemap.xml
+- ✅ Fast loading — no frameworks, minimal dependencies
 
 ## What needs your input to fully switch on
 
-- **Google Reviews** — link is a placeholder until you add your real Google Business Profile URL
-- **Social media icons** — hidden until you add real profile links
-- **Google Analytics / Meta Pixel** — inactive until you add your IDs
-- **UPI payment button** — hidden until you add your UPI ID
+- Google Reviews link, social media icons, Google Analytics, Meta Pixel, UPI — all in `js/site-config.js`, all optional until filled in
 
-## Updating the company profile PDF later
+## First-time upload
 
-If your flyer content changes, let me know and I'll regenerate `assets/company-profile.pdf` — just re-upload that one file afterward.
-
-## Adding more PDFs (price lists, brochures, etc.)
-
-Drop any PDF into the `assets/` folder and add a new `resource-item` link in
-`index.html`'s Resources section (copy the existing Company Profile one as a
-template) — or ask me to add it for you next time.
+Upload all files in this folder, preserving the exact structure shown
+above — GitHub's "Add file" screen lets you type a full path (like
+`erp/js/pages/orders.js`) into the filename box, creating folders
+automatically.

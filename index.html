@@ -21,14 +21,7 @@
 
 <!-- ===================== NOTICE BAR ===================== -->
 <div class="notice-bar">
-  <div class="notice-track">
-    <span lang-en>📢 Now serving farmers and institutions across Madhya Pradesh</span>
-    <span lang-hi>📢 अब मध्य प्रदेश भर के किसानों और संस्थानों की सेवा में</span>
-    <span lang-en>🌱 Quality seeds & agri-inputs, delivered reliably</span>
-    <span lang-hi>🌱 गुणवत्तापूर्ण बीज और कृषि-इनपुट, भरोसेमंद डिलीवरी के साथ</span>
-    <span lang-en>🤝 Open to strategic partnerships with FPOs, cooperatives & institutions</span>
-    <span lang-hi>🤝 FPO, सहकारी संस्थाओं और संगठनों के साथ साझेदारी हेतु उपलब्ध</span>
-  </div>
+  <div class="notice-track" id="noticeTrack"></div>
 </div>
 
 <!-- ===================== HEADER ===================== -->
@@ -41,6 +34,7 @@
     <nav class="nav-links">
       <a href="#about" lang-en>About</a><a href="#about" lang-hi>हमारे बारे में</a>
       <a href="#focus" lang-en>What We Do</a><a href="#focus" lang-hi>हमारा कार्य</a>
+      <a href="#events" lang-en>Events</a><a href="#events" lang-hi>कार्यक्रम</a>
       <a href="#resources" lang-en>Resources</a><a href="#resources" lang-hi>संसाधन</a>
       <a href="#contact" lang-en>Contact</a><a href="#contact" lang-hi>संपर्क</a>
     </nav>
@@ -60,6 +54,7 @@
   <div class="mobile-nav" id="mobileNav">
     <a href="#about" lang-en>About</a><a href="#about" lang-hi>हमारे बारे में</a>
     <a href="#focus" lang-en>What We Do</a><a href="#focus" lang-hi>हमारा कार्य</a>
+    <a href="#events" lang-en>Events</a><a href="#events" lang-hi>कार्यक्रम</a>
     <a href="#resources" lang-en>Resources</a><a href="#resources" lang-hi>संसाधन</a>
     <a href="#contact" lang-en>Contact</a><a href="#contact" lang-hi>संपर्क</a>
   </div>
@@ -68,18 +63,7 @@
 <!-- ===================== BANNER SLIDER ===================== -->
 <div style="position:relative;background:var(--p-light);overflow:hidden">
   <div class="container" style="padding:14px 24px;position:relative;min-height:26px">
-    <div class="banner-slide active" style="font-size:13.5px;font-weight:600;color:var(--p-dark)">
-      <span lang-en>🌾 "Empowering Agriculture Through Innovation, Sustainability &amp; Strategic Partnerships"</span>
-      <span lang-hi>🌾 "नवाचार, स्थिरता और रणनीतिक साझेदारी के माध्यम से कृषि को सशक्त बनाना"</span>
-    </div>
-    <div class="banner-slide" style="font-size:13.5px;font-weight:600;color:var(--p-dark);position:absolute;top:14px;left:24px;right:24px">
-      <span lang-en>📦 Reliable distribution network reaching every corner of agricultural India</span>
-      <span lang-hi>📦 पूरे कृषि भारत तक पहुँचने वाला विश्वसनीय वितरण नेटवर्क</span>
-    </div>
-    <div class="banner-slide" style="font-size:13.5px;font-weight:600;color:var(--p-dark);position:absolute;top:14px;left:24px;right:24px">
-      <span lang-en>🤝 Let's build a greener, more prosperous agriculture together</span>
-      <span lang-hi>🤝 आइए मिलकर एक हरित और समृद्ध कृषि का निर्माण करें</span>
-    </div>
+    <div id="bannerSlides" style="font-size:13.5px;font-weight:600;color:var(--p-dark)"></div>
   </div>
 </div>
 <style>.banner-slide{display:none}.banner-slide.active{display:block;position:static !important}</style>
@@ -185,6 +169,16 @@
   </div>
 </section>
 
+<!-- ===================== EVENTS & GALLERY ===================== -->
+<section id="events">
+  <div class="container">
+    <div class="section-eyebrow"><span lang-en>Events &amp; Gallery</span><span lang-hi>कार्यक्रम और गैलरी</span></div>
+    <h2 class="section-title"><span lang-en>Moments From the Field</span><span lang-hi>क्षेत्र से पल</span></h2>
+    <p class="section-sub"><span lang-en>Photos from our events, workshops, and farmer meets.</span><span lang-hi>हमारे कार्यक्रमों, कार्यशालाओं और किसान मिलनों की तस्वीरें।</span></p>
+    <div class="events-grid" id="eventsGrid"></div>
+  </div>
+</section>
+
 <!-- ===================== RESOURCES ===================== -->
 <section id="resources" style="background:var(--card)">
   <div class="container">
@@ -266,6 +260,7 @@
       <h4><span lang-en>Quick Links</span><span lang-hi>त्वरित लिंक</span></h4>
       <a href="#about"><span lang-en>About Us</span><span lang-hi>हमारे बारे में</span></a>
       <a href="#focus"><span lang-en>What We Do</span><span lang-hi>हमारा कार्य</span></a>
+      <a href="#events"><span lang-en>Events</span><span lang-hi>कार्यक्रम</span></a>
       <a href="#resources"><span lang-en>Resources</span><span lang-hi>संसाधन</span></a>
       <a href="#contact"><span lang-en>Contact</span><span lang-hi>संपर्क</span></a>
       <a href="./erp/index.html"><span lang-en>Team Login</span><span lang-hi>टीम लॉगिन</span></a>
@@ -309,6 +304,7 @@
 </div>
 
 <script src="./js/site-config.js"></script>
+<script src="./js/site-content.js"></script>
 <script src="./js/site.js"></script>
 </body>
 </html>
