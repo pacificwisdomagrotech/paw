@@ -2,6 +2,11 @@
    SITE CONTENT — edit THIS file for day-to-day updates. No HTML or code
    knowledge needed: just add, remove, or change entries below in the same
    pattern as the examples. Re-upload only this one file when you're done.
+
+   IMPORTANT: if you edit this file in a text editor app, make sure it saves
+   as UTF-8 (not "Windows-1252" or "ANSI") — otherwise Hindi text turns into
+   garbled characters like "à¤¸à¤‚". Safest option: ask Claude to make edits
+   for you, or use GitHub's own web editor, which always saves as UTF-8.
    ============================================================================= */
 
 /* ---------- 1. NOTICE BAR (the small scrolling strip at the very top) ----------
@@ -28,6 +33,8 @@ const SITE_BANNERS = [
      2. Add one line below pointing to it, with a caption and date
    The image shows on the site automatically — no other changes needed. */
 const SITE_EVENTS = [
+  { image: "./assets/events/6.jpg", caption: "Nagarjun Sagar Dam", date: "August 2026" },
+  // Example of how to add another — just copy this line, edit the text, remove the "//":
   // { image: "./assets/events/farmer-meet-2026.jpg", caption: "Farmer Training Workshop", captionHi: "किसान प्रशिक्षण कार्यशाला", date: "August 2026" },
   // { image: "./assets/events/expo-2026.jpg", caption: "Agri Expo Indore", captionHi: "कृषि एक्सपो इंदौर", date: "July 2026" },
 ];
