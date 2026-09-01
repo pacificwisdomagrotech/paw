@@ -3,6 +3,39 @@
    step, no framework — keeps the page light and fast-loading.
    ============================================================================= */
 
+/* ---------- Content rendering (notices, banners, events) ----------
+   Reads from site-content.js so updating those never requires touching
+   this file or the HTML. */
+function renderNoticeBar(){
+  const track = document.getElementById('noticeTrack');
+  if(!track || !window.SITE_NOTICES) return;
+  track.innerHTML = SITE_NOTICES.map(n => `<span lang-en>${n.en}</span><span lang-hi>${n.hi}</span>`).join('');
+}
+
+function renderBannerSlider(){
+  const wrap = document.getElementById('bannerSlides');
+  if(!wrap || !window.SITE_BANNERS) return;
+  wrap.innerHTML = SITE_BANNERS.map((b, i) => `
+    <div class="banner-slide${i===0 ? ' active' : ''}">
+      <span lang-en>${b.en}</span><span lang-hi>${b.hi}</span>
+    </div>`).join('');
+}
+
+function renderEvents(){
+  const grid = document.getElementById('eventsGrid');
+  const section = document.getElementById('events');
+  if(!grid || !section || !window.SITE_EVENTS) return;
+  if(!SITE_EVENTS.length){ section.style.display = 'none'; return; }
+  grid.innerHTML = SITE_EVENTS.map(e => `
+    <div class="event-card">
+      <img src="${e.image}" alt="${e.caption}" loading="lazy">
+      <div class="event-info">
+        <b><span lang-en>${e.caption}</span><span lang-hi>${e.captionHi || e.caption}</span></b>
+        <span class="muted" style="font-size:12.5px">${e.date || ''}</span>
+      </div>
+    </div>`).join('');
+}
+
 /* ---------- Mobile nav ---------- */
 function toggleMobileNav(){
   document.getElementById('mobileNav').classList.toggle('open');
@@ -29,6 +62,9 @@ function rotateBanner(){
   slides[bannerIndex].classList.add('active');
 }
 document.addEventListener('DOMContentLoaded', () => {
+  renderNoticeBar();
+  renderBannerSlider();
+  renderEvents();
   if(document.querySelectorAll('.banner-slide').length){
     setInterval(rotateBanner, 5000);
   }
