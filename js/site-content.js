@@ -31,10 +31,20 @@ const SITE_BANNERS = [
    To add a photo from an event:
      1. Put the image file into the assets/events/ folder (any name, e.g. "farmer-meet-2026.jpg")
      2. Add one line below pointing to it, with a caption and date
-   The image shows on the site automatically — no other changes needed. */
+   The image shows on the site automatically — no other changes needed.
+
+   The 7 photos below (1.jpg–7.jpg) are already in your assets/events/
+   folder. I used generic captions since I don't know what each photo
+   actually shows — edit the "caption" (and add "captionHi" for Hindi) on
+   each line below to describe them properly; the "date" is a guess too. */
 const SITE_EVENTS = [
+  { image: "./assets/events/1.jpg", caption: "Event Photo 1", date: "2026" },
+  { image: "./assets/events/2.jpg", caption: "Event Photo 2", date: "2026" },
+  { image: "./assets/events/3.jpg", caption: "Event Photo 3", date: "2026" },
+  { image: "./assets/events/4.jpg", caption: "Event Photo 4", date: "2026" },
+  { image: "./assets/events/5.jpg", caption: "Event Photo 5", date: "2026" },
   { image: "./assets/events/6.jpg", caption: "Nagarjun Sagar Dam", date: "August 2026" },
+  { image: "./assets/events/7.jpg", caption: "Event Photo 7", date: "2026" },
   // Example of how to add another — just copy this line, edit the text, remove the "//":
   // { image: "./assets/events/farmer-meet-2026.jpg", caption: "Farmer Training Workshop", captionHi: "किसान प्रशिक्षण कार्यशाला", date: "August 2026" },
-  // { image: "./assets/events/expo-2026.jpg", caption: "Agri Expo Indore", captionHi: "कृषि एक्सपो इंदौर", date: "July 2026" },
 ];

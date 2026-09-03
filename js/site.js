@@ -8,13 +8,18 @@
    this file or the HTML. */
 function renderNoticeBar(){
   const track = document.getElementById('noticeTrack');
-  if(!track || !window.SITE_NOTICES) return;
+  // NOTE: SITE_NOTICES is declared with `const` in site-content.js — top-level
+  // const/let never attaches to `window`, even though the bare name works
+  // fine here since all classic <script> tags share one global scope. Using
+  // `window.SITE_NOTICES` as an existence check was always false, which is
+  // why this silently rendered nothing. `typeof` is the safe way to check.
+  if(!track || typeof SITE_NOTICES === 'undefined') return;
   track.innerHTML = SITE_NOTICES.map(n => `<span lang-en>${n.en}</span><span lang-hi>${n.hi}</span>`).join('');
 }
 
 function renderBannerSlider(){
   const wrap = document.getElementById('bannerSlides');
-  if(!wrap || !window.SITE_BANNERS) return;
+  if(!wrap || typeof SITE_BANNERS === 'undefined') return;
   wrap.innerHTML = SITE_BANNERS.map((b, i) => `
     <div class="banner-slide${i===0 ? ' active' : ''}">
       <span lang-en>${b.en}</span><span lang-hi>${b.hi}</span>
@@ -24,7 +29,7 @@ function renderBannerSlider(){
 function renderEvents(){
   const grid = document.getElementById('eventsGrid');
   const section = document.getElementById('events');
-  if(!grid || !section || !window.SITE_EVENTS) return;
+  if(!grid || !section || typeof SITE_EVENTS === 'undefined') return;
   if(!SITE_EVENTS.length){ section.style.display = 'none'; return; }
   grid.innerHTML = SITE_EVENTS.map(e => `
     <div class="event-card">
