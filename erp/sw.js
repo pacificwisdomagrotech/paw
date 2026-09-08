@@ -7,7 +7,7 @@ const SHELL = [
   './js/pages/products.js', './js/pages/orders.js', './js/pages/sales.js',
   './js/pages/crm.js', './js/pages/inventory.js', './js/pages/purchases.js',
   './js/pages/users.js', './js/pages/activity.js', './js/pages/reports.js',
-  './js/pages/settings.js', './js/firebase-config.js', './js/app.js',
+  './js/pages/website.js', './js/pages/settings.js', './js/firebase-config.js', './js/app.js',
 ];
 
 self.addEventListener('install', (e) => {

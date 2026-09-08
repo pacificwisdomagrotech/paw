@@ -45,11 +45,55 @@ service cloud.firestore {
     match /farmerPurchases/{id} { allow read, write: if isAdmin(); }
     match /managerStock/{id}   { allow read: if isSignedIn(); allow write: if isSignedIn(); }
     match /activity/{id}   { allow read: if isAdmin(); allow create: if isSignedIn(); }
+    // Public website content — anyone can read (the marketing site isn't
+    // logged in), only admin can add/edit/delete from the ERP.
+    match /cms_notices/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /cms_banners/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /cms_events/{id}  { allow read: if true; allow write: if isAdmin(); }
+    // Visitor counter — public read/write since anonymous site visitors
+    // need to increment it. Isolated to this one low-stakes counter doc,
+    // so worst case is someone inflates a vanity number, not real data.
+    match /site_stats/{id} { allow read: if true; allow write: if true; }
   }
 }
 ```
 
 Publish the rules.
+
+## New in this update: Website Content Management (CMS)
+
+Admin can now add/edit/delete the public site's notice bar, banner slider,
+and event photos directly from **Website Content** in the ERP sidebar —
+no code, no file uploads. Two things to set up once:
+
+**1. Enable Firebase Storage** (for event photos):
+1. Firebase Console → your project → **Build → Storage** → **Get started**
+2. Choose **production mode** → pick the same region as your Firestore
+3. Go to the **Rules** tab and paste:
+```
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /events/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}
+```
+4. Publish
+
+**2. That's it** — the public website already knows how to read
+`cms_notices`, `cms_banners`, and `cms_events` live (see
+`js/site-firebase-config.js` in the website files, which must have the
+same project keys as `erp/js/firebase-config.js` — they do by default
+since I generated both from the same project).
+
+The static lists in the website's `js/site-content.js` still work as a
+fallback — if Firestore has nothing yet (or a visitor is offline), the
+site shows that static content instead of a blank space. Once you add
+your first notice/banner/photo from the ERP, live content takes over
+automatically for everyone.
 
 ## New in this update: crop-trading workflow
 
