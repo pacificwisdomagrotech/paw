@@ -23,6 +23,7 @@ class ERPApplication {
       users: new UsersPage(this),
       activity: new ActivityPage(this),
       reports: new ReportsPage(this),
+      website: new WebsitePage(this),
       settings: new SettingsPage(this),
     };
     Object.entries(this.pages).forEach(([key, page]) => { page.pageKey = key; });
