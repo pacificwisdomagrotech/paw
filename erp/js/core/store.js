@@ -11,6 +11,7 @@ class DataStore {
     this.products = []; this.enquiries = []; this.orders = []; this.sales = [];
     this.farmers = []; this.customers = []; this.inventory = []; this.users = [];
     this.activityLog = []; this.managerStock = []; this.farmerPurchases = [];
+    this.cmsNotices = []; this.cmsBanners = []; this.cmsEvents = [];
     this._onChange = null;   // set by App to trigger a re-render of the active page
     this.onNewOrder = null;  // set by App: fires (order) => ... when a fresh order needs admin's attention
     this.onNewSale = null;   // set by App: fires (sale) => ... when a fresh sale needs admin's attention
@@ -65,6 +66,10 @@ class DataStore {
     db.collection('managerStock').onSnapshot(s=>{ this.managerStock = s.docs.map(d=>({id:d.id,...d.data()})); this._notifyIfRelevant(['sales','dashboard']); });
     db.collection('farmerPurchases').orderBy('createdAt','desc').onSnapshot(s=>{ this.farmerPurchases = s.docs.map(d=>({id:d.id,...d.data()})); this._notifyIfRelevant(['purchases']); });
     db.collection('users').onSnapshot(s=>{ this.users = s.docs.map(d=>({id:d.id,...d.data()})); this._notifyIfRelevant(['users']); });
+
+    db.collection('cms_notices').orderBy('order','asc').onSnapshot(s=>{ this.cmsNotices = s.docs.map(d=>({id:d.id,...d.data()})); this._notifyIfRelevant(['website']); });
+    db.collection('cms_banners').orderBy('order','asc').onSnapshot(s=>{ this.cmsBanners = s.docs.map(d=>({id:d.id,...d.data()})); this._notifyIfRelevant(['website']); });
+    db.collection('cms_events').orderBy('order','asc').onSnapshot(s=>{ this.cmsEvents = s.docs.map(d=>({id:d.id,...d.data()})); this._notifyIfRelevant(['website']); });
 
     db.collection('activity').orderBy('at','desc').limit(200).onSnapshot(s=>{
       const prev = this.activityLog.length;

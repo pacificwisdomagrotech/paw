@@ -17,6 +17,7 @@ class Router {
       {id:'inventory', label:'Warehouse Stock', icon:'package', roles:['admin']},
       {id:'users', label:'Manage Managers', icon:'user-plus', roles:['admin']},
       {id:'activity', label:'Activity Log', icon:'history', roles:['admin']},
+      {id:'website', label:'Website Content', icon:'globe', roles:['admin']},
     ]},
     {section:'Account', items:[
       {id:'reports', label:'Reports', icon:'bar-chart-3', roles:['admin','manager','sales']},

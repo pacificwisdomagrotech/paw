@@ -31,6 +31,7 @@ class FirebaseService {
     this.secondaryApp = firebase.initializeApp(config, 'Secondary');
     this.auth = firebase.auth();
     this.db = firebase.firestore();
+    this.storage = firebase.storage();
   }
   get secondaryAuth(){ return this.secondaryApp.auth(); }
 }
