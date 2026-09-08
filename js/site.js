@@ -4,42 +4,111 @@
    ============================================================================= */
 
 /* ---------- Content rendering (notices, banners, events) ----------
-   Reads from site-content.js so updating those never requires touching
-   this file or the HTML. */
-function renderNoticeBar(){
+   Two sources feed these: the static lists in site-content.js (always
+   available, works offline, zero setup) and live data from Firestore
+   (managed by your admin from inside the ERP's "Website Content" page).
+   Static renders first so the page is never empty; live data — if any
+   exists — then overwrites it in real time. */
+function paintNotices(list){
   const track = document.getElementById('noticeTrack');
-  // NOTE: SITE_NOTICES is declared with `const` in site-content.js — top-level
-  // const/let never attaches to `window`, even though the bare name works
-  // fine here since all classic <script> tags share one global scope. Using
-  // `window.SITE_NOTICES` as an existence check was always false, which is
-  // why this silently rendered nothing. `typeof` is the safe way to check.
-  if(!track || typeof SITE_NOTICES === 'undefined') return;
-  track.innerHTML = SITE_NOTICES.map(n => `<span lang-en>${n.en}</span><span lang-hi>${n.hi}</span>`).join('');
+  if(!track || !list || !list.length) return false;
+  track.innerHTML = list.map(n => `<span lang-en>${n.en}</span><span lang-hi>${n.hi}</span>`).join('');
+  return true;
 }
-
-function renderBannerSlider(){
+function paintBanners(list){
   const wrap = document.getElementById('bannerSlides');
-  if(!wrap || typeof SITE_BANNERS === 'undefined') return;
-  wrap.innerHTML = SITE_BANNERS.map((b, i) => `
+  if(!wrap || !list || !list.length) return false;
+  bannerIndex = 0;
+  wrap.innerHTML = list.map((b, i) => `
     <div class="banner-slide${i===0 ? ' active' : ''}">
       <span lang-en>${b.en}</span><span lang-hi>${b.hi}</span>
     </div>`).join('');
+  return true;
 }
-
-function renderEvents(){
+function paintEvents(list){
   const grid = document.getElementById('eventsGrid');
   const section = document.getElementById('events');
-  if(!grid || !section || typeof SITE_EVENTS === 'undefined') return;
-  if(!SITE_EVENTS.length){ section.style.display = 'none'; return; }
-  grid.innerHTML = SITE_EVENTS.map(e => `
+  if(!grid || !section) return false;
+  if(!list || !list.length){ section.style.display = 'none'; return false; }
+  section.style.display = '';
+  grid.innerHTML = list.map(e => `
     <div class="event-card">
-      <img src="${e.image}" alt="${e.caption}" loading="lazy">
+      <img src="${e.image || e.imageUrl}" alt="${e.caption}" loading="lazy">
       <div class="event-info">
         <b><span lang-en>${e.caption}</span><span lang-hi>${e.captionHi || e.caption}</span></b>
         <span class="muted" style="font-size:12.5px">${e.date || ''}</span>
       </div>
     </div>`).join('');
+  return true;
 }
+
+function renderNoticeBar(){ paintNotices(typeof SITE_NOTICES !== 'undefined' ? SITE_NOTICES : []); }
+function renderBannerSlider(){ paintBanners(typeof SITE_BANNERS !== 'undefined' ? SITE_BANNERS : []); }
+function renderEvents(){ paintEvents(typeof SITE_EVENTS !== 'undefined' ? SITE_EVENTS : []); }
+
+/* ---------- Live content from Firestore (managed via the ERP) ----------
+   Same Firebase project as the ERP app, read-only here. Silently falls
+   back to the static site-content.js render above if Firestore has
+   nothing yet, or can't be reached (e.g. the visitor is offline). */
+function getPublicFirebaseApp(){
+  if(typeof firebase === 'undefined' || typeof PUBLIC_FIREBASE_CONFIG === 'undefined') return null;
+  return firebase.apps.find(a => a.name === 'publicSite') || firebase.initializeApp(PUBLIC_FIREBASE_CONFIG, 'publicSite');
+}
+
+(function initLiveContent(){
+  const liveApp = getPublicFirebaseApp();
+  if(!liveApp) return;
+  try{
+    const db = liveApp.firestore();
+
+    db.collection('cms_notices').orderBy('order','asc').onSnapshot(
+      snap => { if(!snap.empty) paintNotices(snap.docs.map(d=>d.data())); },
+      () => {} // offline/unreachable — static fallback already showing, nothing more to do
+    );
+    db.collection('cms_banners').orderBy('order','asc').onSnapshot(
+      snap => { if(!snap.empty) paintBanners(snap.docs.map(d=>d.data())); },
+      () => {}
+    );
+    db.collection('cms_events').orderBy('order','asc').onSnapshot(
+      snap => { if(!snap.empty) paintEvents(snap.docs.map(d=>d.data())); },
+      () => {}
+    );
+  }catch(e){ /* Firebase SDK present but init failed — static content stands */ }
+})();
+
+/* ---------- Visitor counter (today + all-time, like the old-school
+   website counters) ---------- */
+(function initVisitorCounter(){
+  const app = getPublicFirebaseApp();
+  if(!app) return;
+  try{
+    const db = app.firestore();
+    const today = new Date().toISOString().slice(0, 10);
+    const counterRef = db.collection('site_stats').doc('counters');
+
+    // Count this visit once per browser tab session, not once per page
+    // scroll/interaction — avoids inflating the count on a single visit.
+    if(!sessionStorage.getItem('pw_visit_counted')){
+      sessionStorage.setItem('pw_visit_counted', '1');
+      counterRef.set({
+        total: firebase.firestore.FieldValue.increment(1),
+        byDate: { [today]: firebase.firestore.FieldValue.increment(1) }
+      }, { merge: true }).catch(() => {});
+    }
+
+    // Always show the live current numbers, whether or not this particular
+    // visit was the one that just incremented them.
+    counterRef.onSnapshot(doc => {
+      const el = document.getElementById('visitorStats');
+      if(!el || !doc.exists) return;
+      const data = doc.data();
+      const todayCount = (data.byDate && data.byDate[today]) || 0;
+      const total = data.total || 0;
+      el.style.display = '';
+      el.innerHTML = `<span lang-en>Visitors today: ${todayCount} · Total: ${total.toLocaleString('en-IN')}</span><span lang-hi>आज विज़िटर: ${todayCount} · कुल: ${total.toLocaleString('en-IN')}</span>`;
+    }, () => {});
+  }catch(e){ /* counter is a nice-to-have, never let it break the page */ }
+})();
 
 /* ---------- Mobile nav ---------- */
 function toggleMobileNav(){
