@@ -91,11 +91,18 @@ class WebsitePage extends Page {
     if(!file || !caption){ errEl.textContent = 'Choose a photo and enter a caption.'; errEl.style.display='block'; return; }
     const btn = document.getElementById('evSaveBtn');
     btn.textContent = 'Uploading…'; btn.disabled = true;
+    errEl.style.display = 'none';
+    // A hard timeout so this can never sit on "Uploading..." forever — the
+    // most common real cause of a hang here is Firebase Storage not being
+    // enabled yet (or its security rules not published) for this project.
+    const timeout = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('Timed out after 20s. Check that Firebase Storage is enabled for your project (Console → Build → Storage → Get started) and that its rules are published — see SETUP.md.')), 20000)
+    );
     try{
       const path = `events/${Date.now()}_${file.name}`;
       const ref = this.app.fb.storage.ref(path);
-      await ref.put(file);
-      const imageUrl = await ref.getDownloadURL();
+      await Promise.race([ref.put(file), timeout]);
+      const imageUrl = await Promise.race([ref.getDownloadURL(), timeout]);
       const list = this.store.cmsEvents;
       const nextOrder = list.length ? Math.max(...list.map(i=>i.order||0)) + 1 : 1;
       await this.db.collection('cms_events').add({
